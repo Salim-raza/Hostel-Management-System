@@ -6,6 +6,7 @@ class CustomUser(models.Model):
         ('admin', 'Admin'),
         ('controller', 'Controller'),
         ('assistant-controller', 'Assistant Controller'),
+        ('manager', 'Manager'),
         ('student', 'Student'),
     )
     username = models.CharField(max_length=100)
