@@ -14,6 +14,8 @@ class Profile(models.Model):
     room_number = models.CharField(max_length=10, blank=True, null=True)
     date_of_birth = models.DateField(blank=True, null=True)
     address = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.user.email
