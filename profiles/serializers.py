@@ -4,7 +4,7 @@ from .models import *
 class ProfileUpdateSerializers(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ['first_name', 'last_name', 'email', 'phone_number', 'division', 'district', 'upazila', 'room_number', 'date_of_birth', 'address', 'image', 'created_at', 'updated_at']
+        fields = ['first_name', 'last_name', 'phone_number', 'division', 'district', 'upazila', 'room_number', 'date_of_birth', 'address', 'image', 'created_at', 'updated_at']
         read_only_fields = ["created_at", "updated_at"]
         
     def update(self, instance, validated_data):
