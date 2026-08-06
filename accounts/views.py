@@ -1,12 +1,16 @@
 from rest_framework.decorators import APIView, permission_classes, authentication_classes
+from .serializers import UserCreateSerializer, SigninSerializer, ChangePasswordSerializer
+from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .serializers import UserCreateSerializer, SigninSerializer
 from rest_framework.authentication import authenticate
 from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
+from django.shortcuts import get_object_or_404
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework.response import Response
 from .utils import get_tokens_for_user
 from rest_framework import status
+from .models import CustomUser
 # Create your views here.
 
 
@@ -45,3 +49,23 @@ class SignupView(APIView):
         return Response({"message": "invalid email or password"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
+class ChangePassword(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    @swagger_auto_schema(
+        request_body=ChangePasswordSerializer,
+        responses={200: "password change Successful", 401: "Invalid credentials"},
+        operation_description="password change"
+    )
+    
+    def post(self, request, formate=None):
+        serializer = ChangePasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = get_object_or_404(CustomUser, id=request.user.id)
+        if user.check_password(serializer.validated_data["old_password"]):
+            user.set_password(serializer.validated_data["new_password"])
+            user.save()
+            return Response({"message": "password change successful"}, status=status.HTTP_200_OK)
+        return Response({"message": "invalid old password"}, status=status.HTTP_400_BAD_REQUEST)
