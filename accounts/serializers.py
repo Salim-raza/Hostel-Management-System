@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import CustomUser
 
-class UserSerializer(serializers.ModelSerializer):
+class UserCreateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     class Meta:
         model = CustomUser
@@ -20,4 +20,6 @@ class UserSerializer(serializers.ModelSerializer):
         if value == 'admin' or value == 'controller' or value == 'assistant-controller' or value == 'manager':
             raise serializers.ValidationError("You cannot create a user with this role.")
             
-            
+class SigninSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()

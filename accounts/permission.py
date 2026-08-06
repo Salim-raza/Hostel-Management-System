@@ -9,4 +9,11 @@ class IsControllerOrAdmin(BasePermission):
         if not user or not user.is_authenticated:
             return False
         return user.role == 'controller' or user.role == 'admin'
+    
 
+class IsStudentOrAdminOrControllerOrManager(BasePermission):
+    def has_permission(self, request, view):
+        user = request.user
+        if not user or not user.is_authenticated:
+            return False
+        return user.role in ['student', 'admin', 'controller', 'manager']
