@@ -1,5 +1,5 @@
 from rest_framework.decorators import APIView, permission_classes, authentication_classes
-from .serializers import UserCreateSerializer, SigninSerializer, ChangePasswordSerializer
+from .serializers import UserCreateSerializer, SigninSerializer, ChangePasswordSerializer, OtpCreateSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.authentication import authenticate
@@ -10,7 +10,9 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.response import Response
 from .utils import get_tokens_for_user
 from rest_framework import status
-from .models import CustomUser
+from .models import CustomUser, OTP
+from django.utils import timezone
+import random
 # Create your views here.
 
 
@@ -69,3 +71,29 @@ class ChangePassword(APIView):
             user.save()
             return Response({"message": "password change successful"}, status=status.HTTP_200_OK)
         return Response({"message": "invalid old password"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+class SendOtp(APIView):
+    permission_classes = [AllowAny]
+    
+    def post(self, request, format=None):
+        serializer = OtpCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        email = serializer.validated_data["email"]
+        
+        if CustomUser.objects.filter(email=email).exists():
+            user = CustomUser.objects.get(email=email)
+            otp = random.randint(1111, 9999)
+            
+            OTP.objects.update_or_create(user=user, defaults={"otp": otp, "create_at": timezone.now()})
+            
+            return Response({
+                "status": "success",
+                "message": "otp create successful"
+            }, status=status.HTTP_201_CREATED)
+            
+        return Response({
+            "status": "failed",
+            "message": "email dosenot exists"
+        }, status=status.HTTP_400_BAD_REQUEST)
