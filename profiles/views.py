@@ -38,3 +38,20 @@ class ProfileListView(APIView):
         profiles = Profile.objects.all()
         serializer = ProfileUpdateSerializers(profiles, many=True)
         return Response({"profiles": serializer.data}, status=status.HTTP_200_OK)
+    
+class DeleteProfile(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
+    def delete(self, request):
+        user = request.user
+        if user is None:
+            return Response({
+                "message": "user delete successful"
+            }, status=status.HTTP_200_OK)
+        user.delete()
+        return Response(
+            {"message": "profile delete successful"},
+            status=status.HTTP_200_OK
+            )
+    
