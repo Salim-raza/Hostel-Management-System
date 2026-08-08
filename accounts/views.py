@@ -1,5 +1,5 @@
 from rest_framework.decorators import APIView, permission_classes, authentication_classes
-from .serializers import UserCreateSerializer, SigninSerializer, ChangePasswordSerializer, OtpCreateSerializer
+from .serializers import UserCreateSerializer, SigninSerializer, ChangePasswordSerializer, OtpCreateSerializer, ResetPasswordSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.authentication import authenticate
@@ -97,3 +97,43 @@ class SendOtp(APIView):
             "status": "failed",
             "message": "email dosenot exists"
         }, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class ResetPassword(APIView):
+    permission_classes = [AllowAny]
+    
+    def post(self, request, format=None):
+        serializer = ResetPasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        email = serializer.validated_data["email"]
+        otp = serializer.validated_data["otp"]
+        new_password = serializer.validated_data["new_password"]
+        
+        if CustomUser.objects.filter(email=email).exists():
+            user = CustomUser.objects.get(email__iexact=email)
+            db_otp = OTP.objects.filter(user=user).last()
+            
+            if db_otp and str(otp) == str(db_otp.otp):
+                if db_otp.is_expire:
+                    return Response({
+                        "status": "error",
+                        "message": "otp time is expired"
+                    }, status=status.HTTP_400_BAD_REQUEST)
+                user.set_password(new_password)
+                user.save()
+                
+                return Response({
+                    "status": "success",
+                    "message": "password reset successful"
+                }, status=status.HTTP_200_OK)
+                
+            return Response({
+                "status": "failed",
+                "message": "wrong otp"
+            }, status=status.HTTP_400_BAD_REQUEST)
+            
+        return Response({
+            "status": "failed",
+            "message": "email dosenot exists"
+        },status=status.HTTP_400_BAD_REQUEST)
