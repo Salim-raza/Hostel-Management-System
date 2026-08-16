@@ -12,9 +12,7 @@ class SeatAdd(APIView):
     permission_classes = [IsController]
     authentication_classes = [JWTAuthentication]
     @swagger_auto_schema(
-        method='post',
         request_body=SeatCreateSerializers,
-        responses={200: SeatCreateSerializers(), 400: "bad request"},
         operation_description="seat add"
     )
     def post(self, request, format=None):
@@ -28,9 +26,7 @@ class SeatUpdate(APIView):
     permission_classes = [IsController]
     authentication_classes = [JWTAuthentication]
     @swagger_auto_schema(
-        method='put',
         request_body=SeatCreateSerializers,
-        responses={200: SeatCreateSerializers(), 400: "bad request"},
         operation_description="seat update"
     )
     def put(self, request, format=None):
@@ -48,9 +44,7 @@ class Delete(APIView):
     permission_classes = [IsController]
     authentication_classes = [JWTAuthentication]
     @swagger_auto_schema(
-        method='delete',
         request_body=SeatCreateSerializers,
-        responses={200: "Seat deleted successfully", 400: "bad request"},
         operation_description="seat delete"
     )
     def delete(self, request, format=None):
@@ -60,3 +54,14 @@ class Delete(APIView):
             return Response({"message": "Seat not found"}, status=status.HTTP_404_NOT_FOUND)
         seat.delete()
         return Response({"message": "Seat deleted successfully"}, status=status.HTTP_200_OK)
+    
+class SeatList(APIView):
+    permission_classes = [IsController]
+    authentication_classes = [JWTAuthentication]
+    @swagger_auto_schema(
+        operation_description="seat list"
+    )
+    def get(self, request, format=None):
+        seats = Seat.objects.all()
+        serializer = SeatCreateSerializers(seats, many=True)
+        return Response({"message": "Seat list", "data": serializer.data}, status=status.HTTP_200_OK)
