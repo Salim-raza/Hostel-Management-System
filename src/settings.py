@@ -39,6 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'accounts',
+    "profiles.apps.ProfilesConfig",
+    'rest_framework_simplejwt',
+    'drf_yasg',
+    'seats',
 ]
 
 MIDDLEWARE = [
@@ -69,6 +73,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'src.wsgi.application'
+AUTH_USER_MODEL = 'accounts.CustomUser'
 
 
 # Database
@@ -117,3 +122,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'description': 'Enter: Bearer <your_token>'
+        }
+    },
+    'SECURITY_REQUIREMENTS':[
+        {'Bearer': []}
+    ]
+    
+}
