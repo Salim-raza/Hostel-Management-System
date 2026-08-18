@@ -26,3 +26,12 @@ class IsController(BasePermission):
         if not user or user.is_authenticated:
             return False
         return user.role == "controller"
+    
+    
+    
+class IsManager(BasePermission):
+    def has_permission(self, request, view):
+        user = request.user
+        if not user or user.is_authenticated:
+            return False
+        return user.role == "manager"
