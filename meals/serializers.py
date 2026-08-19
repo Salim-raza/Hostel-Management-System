@@ -7,4 +7,10 @@ class MealAddSerializer(serializers.ModelSerializer):
         model = Meal
         fields = "__all__"
         read_only_fields = ["create_at"]
+    
+    
+class MealUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Meal
+        fields = ["data", "meal_type", "is_taken"]
         
