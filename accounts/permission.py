@@ -23,7 +23,7 @@ class IsStudentOrAdminOrControllerOrManager(BasePermission):
 class IsController(BasePermission):
     def has_permission(self, request, view):
         user = request.user
-        if not user or user.is_authenticated:
+        if not user or not user.is_authenticated:
             return False
         return user.role == "controller"
     
@@ -32,7 +32,7 @@ class IsController(BasePermission):
 class IsManager(BasePermission):
     def has_permission(self, request, view):
         user = request.user
-        if not user or user.is_authenticated:
+        if not user or not user.is_authenticated:
             return False
         return user.role == "manager"
     
@@ -42,6 +42,6 @@ class IsManager(BasePermission):
 class IsControllerOrAssistantController(BasePermission):
     def has_permission(self, request, view):
         user = request.user
-        if not user or user.is_authenticated:
+        if not user or not user.is_authenticated:
             return False
         return user.role in ["controller", "assistant_controller"]
