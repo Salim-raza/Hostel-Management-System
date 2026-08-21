@@ -4,7 +4,7 @@ from django.conf import settings
 # Create your models here.
 class Fine(models.Model):
     student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    amount = models.DecimalField(decimal_places=2)
+    amount = models.DecimalField(decimal_places=2, max_digits=10)
     reason = models.CharField(max_length=250, blank=True)
     dou_date = models.DateField()
     is_paid = models.BooleanField(default=False)

@@ -1,5 +1,5 @@
 from rest_framework.decorators import APIView, permission_classes, authentication_classes
-from rest_framework.authentication import JWTAuthentication
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from accounts.permission import IsControllerOrAssistantController
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
