@@ -28,4 +28,5 @@ urlpatterns = [
     path("profile/", include("profiles.urls")),
     path("seats/", include("seats.urls")),
     path("meals/", include("meals.urls")),
+    path("fines/", include("fines.urls"))
 ]
