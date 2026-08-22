@@ -1,22 +1,20 @@
 from rest_framework.decorators import APIView, permission_classes, authentication_classes
 from .serializers import UserCreateSerializer, SigninSerializer, ChangePasswordSerializer, OtpCreateSerializer, ResetPasswordSerializer
-from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import authenticate
 from rest_framework.permissions import AllowAny
 from drf_yasg.utils import swagger_auto_schema
 from django.shortcuts import get_object_or_404
-from drf_yasg.utils import swagger_auto_schema
 from rest_framework.response import Response
 from .utils import get_tokens_for_user
-from rest_framework import status
 from .models import CustomUser, OTP
 from django.utils import timezone
-from drf_yasg.utils import swagger_auto_schema
+from rest_framework import status
 import random
+
+
 # Create your views here.
-
-
 class RegisterView(APIView):
     @swagger_auto_schema(
         request_body=UserCreateSerializer,
