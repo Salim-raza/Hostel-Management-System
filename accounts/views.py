@@ -12,11 +12,17 @@ from .utils import get_tokens_for_user
 from rest_framework import status
 from .models import CustomUser, OTP
 from django.utils import timezone
+from drf_yasg.utils import swagger_auto_schema
 import random
 # Create your views here.
 
 
 class RegisterView(APIView):
+    @swagger_auto_schema(
+        request_body=UserCreateSerializer,
+        responses={201: "User registered successfully", 400: "Invalid data"},
+        operation_description="User registration"
+    )
     def post(self, request):
         serializer = UserCreateSerializer(data=request.data)
         if serializer.is_valid():
@@ -76,6 +82,12 @@ class ChangePassword(APIView):
 class SendOtp(APIView):
     permission_classes = [AllowAny]
     
+    @swagger_auto_schema(
+        request_body=OtpCreateSerializer,
+        responses={201: "otp create successful", 400: "email dosenot exists"},
+        operation_description="send otp"
+    )
+    
     def post(self, request, format=None):
         serializer = OtpCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -101,6 +113,12 @@ class SendOtp(APIView):
 
 class ResetPassword(APIView):
     permission_classes = [AllowAny]
+    
+    @swagger_auto_schema(
+        request_body=ResetPasswordSerializer,
+        responses={200: "password reset successful", 400: "wrong otp or email dosenot exists"},
+        operation_description="reset password"
+    )
     
     def post(self, request, format=None):
         serializer = ResetPasswordSerializer(data=request.data)
