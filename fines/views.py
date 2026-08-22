@@ -30,4 +30,26 @@ class FineUpdateview(APIView):
             serializer.save()
             return Response({"message": "Fine updated successfully."}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class FineDeleteView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsControllerOrAssistantController]
+
+    def delete(self, request, fine_id):
+        fine = get_object_or_404(Fine, id=fine_id)
+        fine.delete()
+        return Response({"message": "Fine deleted successfully."}, status=status.HTTP_200_OK)
+    
+    
+class FineListView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsControllerOrAssistantController]
+
+    def get(self, request):
+        fines = Fine.objects.all()
+        serializer = FineAddSerializer(fines, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    
+    
         
