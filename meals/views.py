@@ -24,7 +24,7 @@ class MealUpdate(APIView):
     permission_classes = [IsManager]
     authentication_classes = [JWTAuthentication]
     
-    def patch(self, request, format=None):
+    def patch(self, request, id, format=None):
         meal = get_object_or_404(Meal, id=id)
         serializer = MealUpdateSerializer(meal, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
@@ -36,8 +36,8 @@ class DeleteMeal(APIView):
     permission_classes = [IsManager]
     authentication_classes = [JWTAuthentication]
     
-    def delete(self, request, format=None):
-        meal = get_object_or_404(meal, id=id)
+    def delete(self, request, id, format=None):
+        meal = get_object_or_404(Meal, id=id)
         meal.delete()
         return Response({"message": "meal delete successful"}, status=status.HTTP_200_OK)
         
